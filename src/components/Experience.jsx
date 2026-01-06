@@ -1,10 +1,12 @@
 import { Environment, OrthographicCamera } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
-import { useControls } from "leva";
-import { useRef } from "react";
+import { Leva, useControls } from "leva";
+import { useRef, useEffect } from "react";
 import { CharacterController } from "./CharacterController";
 import { Map } from "./Map";
 import { Owl } from "./Owl";
+import usePlayer from "../stores/usePlayer";
+import { useFrame } from "@react-three/fiber";
 
 const maps = {
   castle_on_hills: {
@@ -27,27 +29,42 @@ const maps = {
     scale: 0.4,
     position: [-4, 0, -6],
   },
-  test_map_spiek:{
+  test_map_spiek: {
     scale: 2,
-    position: [0,-2,0],
-  }
+    position: [0, -2, 0],
+  },
 };
-
 export const Experience = () => {
   const shadowCameraRef = useRef();
-  const { map } = useControls("Map", {
-    map: {
-      value: "test_map_spiek",
-      options: Object.keys(maps),
-    },
-  });
 
-    const { owlPos } = useControls("Owl", {
-    owlPos: {
-      value: [-0.23, -1.61, -2.66],
-      step: 0.01,
+  const { map } = useControls(
+    "Map",
+    {
+      map: {
+        value: "test_map_spiek",
+        options: Object.keys(maps),
+      },
     },
-  });
+    { collapsed: true }
+  );
+
+  const { owlPos } = useControls(
+    "Owl",
+    {
+      owlPos: {
+        value: [-0.23, -1.61, -2.66],
+        step: 0.01,
+      },
+    },
+    { collapsed: true }
+  );
+
+  const character = useRef();
+  const setPlayer = usePlayer((state) => state.setPlayer);
+
+  useEffect(() => {
+    setPlayer(character);
+  }, [setPlayer]);
 
   return (
     <>
@@ -70,14 +87,20 @@ export const Experience = () => {
           attach={"shadow-camera"}
         />
       </directionalLight>
+      <Leva hidden />
       <Physics key={map}>
         <Map
           scale={maps[map].scale}
           position={maps[map].position}
           model={`models/${map}.glb`}
         />
+
         <CharacterController />
-        <Owl position={owlPos} rotation={[0, Math.PI * 1.45, 0]} animation={"Idle"} />
+        <Owl
+          position={owlPos}
+          rotation={[0, Math.PI * 1.45, 0]}
+          animation={"Idle"}
+        />
       </Physics>
     </>
   );

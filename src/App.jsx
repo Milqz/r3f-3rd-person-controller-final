@@ -1,7 +1,8 @@
 import { KeyboardControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Experience } from "./components/Experience";
-import { Perf } from 'r3f-perf'
+import { Perf } from "r3f-perf";
+import ProgressBar from "./components/ProgressBar";
 
 const keyboardMap = [
   { name: "forward", keys: ["ArrowUp", "KeyW"] },
@@ -9,11 +10,14 @@ const keyboardMap = [
   { name: "left", keys: ["ArrowLeft", "KeyA"] },
   { name: "right", keys: ["ArrowRight", "KeyD"] },
   { name: "run", keys: ["Shift"] },
+  { name: "interact", keys: ["KeyE", "KeyI"] },
+  { name: "getExp", keys: ["KeyX"] },
 ];
 
 function App() {
   return (
     <KeyboardControls map={keyboardMap}>
+      <ProgressBar />
       <Canvas
         shadows
         camera={{ position: [3, 3, 3], near: 0.1, fov: 40 }}
@@ -23,7 +27,7 @@ function App() {
       >
         <color attach="background" args={["#ececec"]} />
         <Experience />
-        <Perf position="top-left"/>
+        {/*<Perf position="top-left"/>*/}
       </Canvas>
     </KeyboardControls>
   );

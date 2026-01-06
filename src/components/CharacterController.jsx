@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { MathUtils, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { Character } from "./Character";
-import { use } from "react";
+import usePlayer from "../stores/usePlayer";
 
 const normalizeAngle = (angle) => {
   while (angle > Math.PI) angle -= 2 * Math.PI;
@@ -41,13 +41,15 @@ export const CharacterController = () => {
         max: degToRad(5),
         step: degToRad(0.1),
       },
-    }
+    },
+    { collapsed: true }
   );
-
 
   const rb = useRef();
   const container = useRef();
-  const character = useRef();
+  const player = usePlayer((state) => state.player);
+  const setInteracting = usePlayer((state) => state.setInteracting);
+  const addXp = usePlayer((state) => state.addXp);
 
   const [animation, setAnimation] = useState("idle");
 
@@ -62,11 +64,12 @@ export const CharacterController = () => {
   const isClicking = useRef(false);
 
   const interactionCooldownRef = useRef(false);
-  const isInteracting = useRef(false);
-  const interactionTimeoutRef = useRef(1000);
+  const isInteracting = usePlayer((state) => state.interacting);
+  const interactionCooldownTime = useRef(500); // 500ms cooldown between presses
+  const isAbleToInteract = usePlayer((state) => state.ableToInteract);
 
-  const {mousecontrols} = useControls("Mouse Controls", {
-    mousecontrols: true
+  const { mousecontrols } = useControls("Mouse Controls", {
+    mousecontrols: true,
   });
 
   useEffect(() => {
@@ -90,20 +93,14 @@ export const CharacterController = () => {
   }, []);
 
   useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "e" || e.key === "E"){
-        if (interactionCooldownRef.current) return;
-        isInteracting.current = true;
-        console.log("interact event received");
-        setAnimation("Wave");
-        interactionCooldownRef.current = true;
-        setTimeout(() => {
-          interactionCooldownRef.current = false;
-          isInteracting.current = false;
-        }, interactionTimeoutRef.current);
-      }
-    });
-  }, []);
+    const interactDive = document.querySelector(".interactionMenu");
+    if (isInteracting) {
+      interactDive.style.display = "flex";
+    } else {
+      interactDive.style.display = "none";
+    }
+    if (!interactDive) return;
+  }, [isInteracting]);
 
   useFrame(({ camera, mouse }) => {
     if (rb.current) {
@@ -125,7 +122,6 @@ export const CharacterController = () => {
 
       if (isClicking.current) {
         if (!mousecontrols) return;
-        console.log("clicking", mouse.x, mouse.y);
         if (Math.abs(mouse.x) > 0.1) {
           movement.x = -mouse.x;
         }
@@ -142,6 +138,11 @@ export const CharacterController = () => {
         movement.x = -1;
       }
 
+      if (get().getExp) {
+        console.log("Xp gained!");
+        addXp(1);
+      }
+
       if (movement.x !== 0) {
         rotationTarget.current += ROTATION_SPEED * movement.x;
       }
@@ -155,33 +156,52 @@ export const CharacterController = () => {
           Math.cos(rotationTarget.current + characterRotationTarget.current) *
           speed;
         if (speed === RUN_SPEED) {
-          if (!isInteracting.current)
-          setAnimation("Run");
+          if (!isInteracting) setAnimation("Run");
         } else {
-          if (!isInteracting.current)
-          setAnimation("Walk");
+          if (!isInteracting) setAnimation("Walk");
         }
       } else {
-        if (!isInteracting.current)
-        setAnimation("Idle");
+        if (!isInteracting) setAnimation("Idle");
       }
 
-      console.log("animation", animation);
-      character.current.rotation.y = lerpAngle(
-        character.current.rotation.y,
+      player.current.rotation.y = lerpAngle(
+        player.current.rotation.y,
         characterRotationTarget.current,
         0.1
       );
 
-      rb.current.setLinvel(vel, true);
+      //Interacting...
+      if (
+        get().interact &&
+        !interactionCooldownRef.current &&
+        isAbleToInteract
+      ) {
+        setInteracting(!isInteracting);
+        console.log("isInteracting:", !isInteracting);
+
+        if (!isInteracting) {
+          setAnimation("Wave");
+        }
+
+        interactionCooldownRef.current = true;
+        setTimeout(() => {
+          interactionCooldownRef.current = false;
+        }, interactionCooldownTime.current);
+      }
+
+      if (!isInteracting) {
+        rb.current.setLinvel(vel, true);
+      }
     }
 
     // CAMERA
-    container.current.rotation.y = MathUtils.lerp(
-      container.current.rotation.y,
-      rotationTarget.current,
-      0.1
-    );
+    if (!isInteracting) {
+      container.current.rotation.y = MathUtils.lerp(
+        container.current.rotation.y,
+        rotationTarget.current,
+        0.1
+      );
+    }
 
     cameraPosition.current.getWorldPosition(cameraWorldPosition.current);
     camera.position.lerp(cameraWorldPosition.current, 0.1);
@@ -199,8 +219,12 @@ export const CharacterController = () => {
       <group ref={container}>
         <group ref={cameraTarget} position-z={1} />
         <group ref={cameraPosition} position-y={2} position-z={-3} />
-        <group ref={character}>
-          <Character scale={0.65} position-y={-0.25} animation={animation ? animation : "Idle"} />
+        <group ref={player}>
+          <Character
+            scale={0.65}
+            position-y={-0.25}
+            animation={animation ? animation : "Idle"}
+          />
         </group>
       </group>
       <CapsuleCollider args={[0.08, 0.15]} />

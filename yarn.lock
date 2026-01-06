@@ -1569,7 +1569,17 @@ zstddec@^0.0.2:
   resolved "https://registry.npmjs.org/zstddec/-/zstddec-0.0.2.tgz"
   integrity sha512-DCo0oxvcvOTGP/f5FA6tz2Z6wF+FIcEApSTu0zV5sQgn9hoT5lZ9YRAKUraxt9oP7l4e8TnNdi8IZTCX6WCkwA==
 
-zustand@^3.5.13, zustand@^3.6.9, zustand@^3.7.1:
+zustand@^3.5.13:
+  version "3.7.2"
+  resolved "https://registry.npmjs.org/zustand/-/zustand-3.7.2.tgz"
+  integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
+
+zustand@^3.6.9:
+  version "3.7.2"
+  resolved "https://registry.npmjs.org/zustand/-/zustand-3.7.2.tgz"
+  integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
+
+zustand@^3.7.1:
   version "3.7.2"
   resolved "https://registry.npmjs.org/zustand/-/zustand-3.7.2.tgz"
   integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
@@ -1582,6 +1592,11 @@ zustand@^4.3.2:
     use-sync-external-store "^1.2.2"
 
 zustand@^5.0.1:
+  version "5.0.9"
+  resolved "https://registry.npmjs.org/zustand/-/zustand-5.0.9.tgz"
+  integrity sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==
+
+zustand@^5.0.9:
   version "5.0.9"
   resolved "https://registry.npmjs.org/zustand/-/zustand-5.0.9.tgz"
   integrity sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==

@@ -7,6 +7,7 @@ import { Map } from "./Map";
 import { Owl } from "./Owl";
 import usePlayer from "../stores/usePlayer";
 import { useFrame } from "@react-three/fiber";
+import { Spiek } from "./Spiek";
 
 const maps = {
   castle_on_hills: {
@@ -45,7 +46,7 @@ export const Experience = () => {
         options: Object.keys(maps),
       },
     },
-    { collapsed: true }
+    { collapsed: true },
   );
 
   const { owlPos } = useControls(
@@ -56,7 +57,7 @@ export const Experience = () => {
         step: 0.01,
       },
     },
-    { collapsed: true }
+    { collapsed: true },
   );
 
   const character = useRef();
@@ -100,6 +101,13 @@ export const Experience = () => {
           position={owlPos}
           rotation={[0, Math.PI * 1.45, 0]}
           animation={"Idle"}
+        />
+
+        <Spiek
+          scale={0.6}
+          position={[2, -1.63, -1]}
+          rotation={[0, Math.PI / 0.8, 0]}
+          animation={"Wave"}
         />
       </Physics>
     </>

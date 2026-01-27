@@ -21,7 +21,7 @@ export default function ProgressBar() {
     <div className={styles.wrapper}>
       <div className={styles.statsContainer}>
         <p className={styles.statText}>Lvl: {level}</p>
-        {/* <p className={styles.statText}>Xp: {progress}%</p> */}
+        <p className={styles.statText}>Xp: {progress}%</p>
       </div>
       <div className={styles.progressBar}>
         <div

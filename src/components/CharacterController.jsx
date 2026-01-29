@@ -42,7 +42,7 @@ export const CharacterController = () => {
         step: degToRad(0.1),
       },
     },
-    { collapsed: true }
+    { collapsed: true },
   );
 
   const rb = useRef();
@@ -167,7 +167,7 @@ export const CharacterController = () => {
       player.current.rotation.y = lerpAngle(
         player.current.rotation.y,
         characterRotationTarget.current,
-        0.1
+        0.1,
       );
 
       //Interacting...
@@ -199,7 +199,7 @@ export const CharacterController = () => {
       container.current.rotation.y = MathUtils.lerp(
         container.current.rotation.y,
         rotationTarget.current,
-        0.1
+        0.1,
       );
     }
 
@@ -217,7 +217,7 @@ export const CharacterController = () => {
   return (
     <RigidBody colliders={false} lockRotations ref={rb}>
       <group ref={container}>
-        <group ref={cameraTarget} position-z={1} />
+        <group ref={cameraTarget} position-z={2} />
         <group ref={cameraPosition} position-y={2} position-z={-3} />
         <group ref={player}>
           <Character

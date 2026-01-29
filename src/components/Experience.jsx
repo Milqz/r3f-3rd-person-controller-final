@@ -34,31 +34,34 @@ const maps = {
     scale: 2,
     position: [0, -2, 0],
   },
+  SpiekMap: {
+    scale: 1,
+    position: [0, -1.5, 0],
+  },
 };
 export const Experience = () => {
   const shadowCameraRef = useRef();
 
-  const { map } = useControls(
-    "Map",
-    {
-      map: {
-        value: "test_map_spiek",
-        options: Object.keys(maps),
-      },
+  const { map } = useControls("Map", {
+    map: {
+      value: "SpiekMap",
+      options: Object.keys(maps),
     },
-    { collapsed: true },
-  );
+  });
 
-  const { owlPos } = useControls(
-    "Owl",
-    {
-      owlPos: {
-        value: [-0.23, -1.61, -2.66],
-        step: 0.01,
-      },
+  const { owlPos } = useControls("Owl", {
+    owlPos: {
+      value: [0.17, -1.2, -2.66],
+      step: 0.01,
     },
-    { collapsed: true },
-  );
+  });
+
+  const { spiekPos } = useControls("Spiek", {
+    spiekPos: {
+      value: [4.2, -1.38, -0.83],
+      step: 0.01,
+    },
+  });
 
   const character = useRef();
   const setPlayer = usePlayer((state) => state.setPlayer);
@@ -72,9 +75,9 @@ export const Experience = () => {
       {/* <OrbitControls /> */}
       <Environment preset="sunset" />
       <directionalLight
-        intensity={0.65}
+        intensity={0.5}
         castShadow
-        position={[-15, 10, 15]}
+        //position={[-15, 10, 15]}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-bias={-0.00005}
@@ -88,7 +91,6 @@ export const Experience = () => {
           attach={"shadow-camera"}
         />
       </directionalLight>
-      <Leva hidden />
       <Physics key={map}>
         <Map
           scale={maps[map].scale}
@@ -99,14 +101,14 @@ export const Experience = () => {
         <CharacterController />
         <Owl
           position={owlPos}
-          rotation={[0, Math.PI * 1.45, 0]}
+          rotation={[0, Math.PI * 1.8, 0]}
           animation={"Idle"}
         />
 
         <Spiek
           scale={0.6}
-          position={[2, -1.63, -1]}
-          rotation={[0, Math.PI / 0.8, 0]}
+          position={spiekPos}
+          rotation={[0, Math.PI / 0.9, 0]}
           animation={"Idle"}
         />
       </Physics>
